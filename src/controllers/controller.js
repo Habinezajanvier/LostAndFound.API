@@ -79,7 +79,17 @@ class Controller {
         };
         
     };
-
+    static async allLostDoc (req, res) {
+        const all_lostDoc = await LostDocuments.find({
+            'status.isDelivered':true
+        })
+        .select({status:0, __v:0, _id:0, });
+        try {
+            res.json(all_lostDoc)
+        } catch (error) {
+            res.json(error.message);
+        };
+    };
     static async lostAndfoundDoc (req, res) {
         const lost_found = await LostDocuments.find({
             $and: [
@@ -93,7 +103,22 @@ class Controller {
         } catch (error) {
             res.json(error.message)
         }
-    }   
+    };
+    static async deleveringDoc (req, res) {
+        const deliveredDoc = await LostDocuments.findOneAndUpdate({_id: req.body.id},{
+            $set: {
+                'status.isDelivered':true,
+                'status.isLost':false,
+                'status.isFound':false
+            }
+        });
+        try {
+            res.json(deliveredDoc);
+        } catch (error) {
+            res.json(error.message);
+        }
+    }
+       
 };
 
 export default Controller;
