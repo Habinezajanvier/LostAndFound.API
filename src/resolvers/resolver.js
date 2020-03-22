@@ -1,6 +1,6 @@
 import lostDocuments from '../../models/lostAndFound'
 
-export const lostResolver = async (req, res)=>{
+export const foundsResolver = async (req, res)=>{
     const found = new lostDocuments({
         documentType: req.body.documentType,
         documentNumber: req.body.documentNumber,
@@ -30,7 +30,7 @@ export const lostResolver = async (req, res)=>{
     };
 };
 
-export const foundsResolver = async (req, res) =>{
+export const lostResolver = async (req, res) =>{
     const lost = new LostDocuments({
         documentType: req.body.documentType,
         documentNumber: req.body.documentNumber,
@@ -38,11 +38,6 @@ export const foundsResolver = async (req, res) =>{
             fullName: req.body.ownerName,
             phoneNumber: req.body.ownerPhoneNumber,
             email: req.body.ownerEmail
-        },
-        whoFound:{
-            fullName: req.body.foundName,
-            phoneNumber: req.body.foundPhoneNumber,
-            email: req.body.foundEmail
         },
         status: {
             isLost: true,

@@ -1,5 +1,5 @@
 import LostDocuments from '../../models/lostAndFound';
-import {lostResolver, lostResolver} from '../resolvers/resolver';
+import {foundsResolver, lostResolver} from '../resolvers/resolver';
 
 
 class Controller {
@@ -34,7 +34,7 @@ class Controller {
             });
         }
         else{
-            lostResolver(req, res);
+            foundsResolver(req, res);
         }
         
     };
