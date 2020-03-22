@@ -1,44 +1,8 @@
 import LostDocuments from '../../models/lostAndFound';
-import {foundsResolver, lostResolver} from '../resolvers/resolver';
+import Resolver from '../resolvers/resolver';
 
 
 class Controller {
-    static async foundController (req, res){
-
-        //we have to search if the found documents is advertised to be lost
-        const theLost = await LostDocuments.findOne({
-            $and:[
-                {documentNumber: req.body.documentNumber},
-                {documentType: req.body.documentType},
-                {'status.isLost':true}
-            ]
-        });
-        
-        //updating the lost document to be found or saving a new found document
-        if (theLost) {
-            const update = await LostDocuments.updateOne({_id: theLost._id}, 
-                {$set: {
-                    'status.isFound':true, 
-                    'location.pickingPlace':req.body.location,
-                    'whoFound.fullName':req.body.foundName,
-                    'whoFound.phoneNumber':req.body.foundPhoneNumber,
-                    'whoFound.email':req.body.foundEmail
-                }});
-            res.json({ 
-                msg:"This document has advertised to be lost",
-                owner: {
-                    Name: theLost.owner.fullName,
-                    phoneNumber: theLost.owner.phoneNumber,
-                    email: theLost.owner.email
-                }
-            });
-        }
-        else{
-            foundsResolver(req, res);
-        }
-        
-    };
-
     static async lostController (req, res){
 
         //checking if the lost documents has found before
@@ -76,8 +40,44 @@ class Controller {
             } 
         }
         else{
-            lostResolver(req, res);
+            Resolver.lostResolver(req, res);
         };
+    };
+
+    static async foundController (req, res){
+
+        //we have to search if the found documents is advertised to be lost
+        const theLost = await LostDocuments.findOne({
+            $and:[
+                {documentNumber: req.body.documentNumber},
+                {documentType: req.body.documentType},
+                {'status.isLost':true}
+            ]
+        });
+        
+        //updating the lost document to be found or saving a new found document
+        if (theLost) {
+            const update = await LostDocuments.updateOne({_id: theLost._id}, 
+                {$set: {
+                    'status.isFound':true, 
+                    'location.pickingPlace':req.body.location,
+                    'whoFound.fullName':req.body.foundName,
+                    'whoFound.phoneNumber':req.body.foundPhoneNumber,
+                    'whoFound.email':req.body.foundEmail
+                }});
+            res.json({ 
+                msg:"This document has advertised to be lost",
+                owner: {
+                    Name: theLost.owner.fullName,
+                    phoneNumber: theLost.owner.phoneNumber,
+                    email: theLost.owner.email
+                }
+            });
+        }
+        else{
+            Resolver.foundsResolver(req, res);
+        };
+        
     };
 
     static async lostAndfoundDoc (req, res) {
