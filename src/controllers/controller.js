@@ -1,30 +1,9 @@
 import LostDocuments from '../../models/lostAndFound';
+import {lostResolver, lostResolver} from '../resolvers/resolver';
 
 
 class Controller {
     static async foundController (req, res){
-       
-        const found = new LostDocuments({
-            documentType: req.body.documentType,
-            documentNumber: req.body.documentNumber,
-            owner:{
-                fullName: req.body.ownerName,
-                phoneNumber: req.body.ownerPhoneNumber,
-                email: req.body.ownerEmail
-            },
-            whoFound:{
-                fullName: req.body.foundName,
-                phoneNumber: req.body.foundPhoneNumber,
-                email: req.body.foundEmail
-            },
-            status: {
-                isFound: true,
-            },
-            location: {
-                pickingPlace: req.body.location
-            },
-            requireReward: req.body.reward
-        });
 
         //we have to search if the found documents is advertised to be lost
         const theLost = await LostDocuments.findOne({
@@ -38,7 +17,13 @@ class Controller {
         //updating the lost document to be found or saving a new found document
         if (theLost) {
             const update = await LostDocuments.updateOne({_id: theLost._id}, 
-                {$set: {'status.isFound':true, 'location.pickingPlace':req.body.location}});
+                {$set: {
+                    'status.isFound':true, 
+                    'location.pickingPlace':req.body.location,
+                    'whoFound.fullName':req.body.foundName,
+                    'whoFound.phoneNumber':req.body.foundPhoneNumber,
+                    'whoFound.email':req.body.foundEmail
+                }});
             res.json({ 
                 msg:"This document has advertised to be lost",
                 owner: {
@@ -49,38 +34,12 @@ class Controller {
             });
         }
         else{
-            try {
-                const foundDoc = await found.save();
-                res.json(foundDoc)
-            } catch (error) {
-                res.json(error.message);
-            }
+            lostResolver(req, res);
         }
         
     };
 
     static async lostController (req, res){
-        const lost = new LostDocuments({
-            documentType: req.body.documentType,
-            documentNumber: req.body.documentNumber,
-            owner:{
-                fullName: req.body.ownerName,
-                phoneNumber: req.body.ownerPhoneNumber,
-                email: req.body.ownerEmail
-            },
-            whoFound:{
-                fullName: req.body.foundName,
-                phoneNumber: req.body.foundPhoneNumber,
-                email: req.body.foundEmail
-            },
-            status: {
-                isLost: true,
-            },
-            location: {
-                lostPlace: req.body.location
-            },
-            requireReward: req.body.reward
-        });
 
         //checking if the lost documents has found before
         const theFound = await LostDocuments.findOne({
@@ -95,7 +54,13 @@ class Controller {
         if (theFound) {
             try {
                 const update = await LostDocuments.updateOne({_id: theFound._id}, 
-                    {$set: {'status.isLost':true, 'location.lostPlace':req.body.location}});
+                    {$set: {
+                        'status.isLost':true, 
+                        'location.lostPlace':req.body.location, 
+                        'owner.fullName':req.body.ownerName,
+                        'owner.phoneNumber':req.body.ownerPhoneNumber,
+                        'owner.email':req.body.ownerEmail
+                    }}, {$upsert:false});
     
                 res.json({
                     msg: `Your ${theFound.documentType} has found by:`,
@@ -111,12 +76,7 @@ class Controller {
             } 
         }
         else{
-            try {
-                const lostDoc = await lost.save();
-                res.json(lostDoc);
-            } catch (error) {
-                res.json(error.message);
-            }
+            lostResolver(req, res);
         };
     };
 
