@@ -90,6 +90,18 @@ class Controller {
             res.json(error.message);
         };
     };
+    static async allFoundDoc (req, res) {
+        const all_foundDoc = await LostDocuments.find({
+            'status.isFound':true
+        })
+        .select({status:0, __v:0, _id:0});
+        try {
+            res.json(all_foundDoc)
+        } catch (error) {
+            res.json(error.message)
+        };
+    };
+
     static async lostAndfoundDoc (req, res) {
         const lost_found = await LostDocuments.find({
             $and: [
