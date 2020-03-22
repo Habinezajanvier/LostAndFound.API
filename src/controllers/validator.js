@@ -10,7 +10,8 @@ export const foundsValidation =(req, res, next) =>{
         foundPhoneNumber: Joi.string().min(10).required(),
         foundEmail: Joi.string().email(),
         location: Joi.string().min(4),
-        reward: Joi.boolean()
+        reward: Joi.boolean(),
+        price: Joi.number()
     });
 
     const {error} = schema.validate(req.body);
@@ -26,7 +27,8 @@ export const lostsValidation =(req, res, next) =>{
         ownerPhoneNumber: Joi.string().min(10).required(),
         ownerEmail: Joi.string().email(),
         location: Joi.string().min(4),
-        reward: Joi.boolean()
+        reward: Joi.boolean(),
+        price: Joi.number()
     });
 
     const {error} = schema.validate(req.body);

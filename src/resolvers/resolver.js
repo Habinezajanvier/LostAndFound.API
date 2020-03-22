@@ -1,4 +1,4 @@
-import lostDocuments from '../../models/lostAndFound';
+import LostDocuments from '../../models/lostAndFound';
 
 class Resolver {
     static async lostResolver (req, res) {
@@ -16,7 +16,8 @@ class Resolver {
             location: {
                 lostPlace: req.body.location
             },
-            requireReward: req.body.reward
+            requireReward: req.body.reward,
+            price: req.body.price
         });
         try {
             const lostDoc = await lost.save();
@@ -27,7 +28,7 @@ class Resolver {
     };
 
     static async foundsResolver (req, res) {
-        const found = new lostDocuments({
+        const found = new LostDocuments({
             documentType: req.body.documentType,
             documentNumber: req.body.documentNumber,
             owner:{
@@ -46,7 +47,8 @@ class Resolver {
             location: {
                 pickingPlace: req.body.location
             },
-            requireReward: req.body.reward
+            requireReward: req.body.reward,
+            price: req.body.price
         });
         try {
             const foundDoc = await found.save();

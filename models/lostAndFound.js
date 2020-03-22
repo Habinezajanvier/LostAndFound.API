@@ -29,25 +29,34 @@ const foundSchema = mongoose.Schema({
     },
     location: {
         lostPlace: {
-            type: String
+            type: String,
         },
-        pickingPlace: {type: String}
+        pickingPlace: {
+            type: String,
+        }
     },
     status: {
         isLost: {
-            type: Boolean
+            type: Boolean,
+            default:false
         },
         isFound: {
-            type: Boolean
+            type: Boolean,
+            default:false
         },
         isDelivered:{
-            type: Boolean
+            type: Boolean,
+            default: false
         }
     },
     requireReward: {
         type: Boolean,
         required: true,
         default: false
+    },
+    price: {
+        type: Number,
+        required: function() {return this.requireReward; }
     }
 
 });

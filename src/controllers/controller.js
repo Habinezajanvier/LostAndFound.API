@@ -81,7 +81,7 @@ class Controller {
     };
     static async allLostDoc (req, res) {
         const all_lostDoc = await LostDocuments.find({
-            'status.isDelivered':true
+            'status.isLost':true
         })
         .select({status:0, __v:0, _id:0, });
         try {
@@ -111,7 +111,7 @@ class Controller {
                 'status.isLost':false,
                 'status.isFound':false
             }
-        });
+        }, {new:true});
         try {
             res.json(deliveredDoc);
         } catch (error) {
